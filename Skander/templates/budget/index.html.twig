@@ -1,0 +1,39 @@
+{% extends 'header.oc.html.twig' %}
+
+{% block title %}Gestion des budgets{% endblock %}
+
+{% block body %}
+    <h1>Gestion des Budgets</h1>
+
+    <div class="table-responsive">
+    <table class="table align-items-center ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Montant</th>
+                <th>Activite</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for budget in budgets %}
+            <tr>
+                <td>{{ budget.idBudget }}</td>
+                <td>{{ budget.montant }}</td>
+                <td>{{ budget.activite }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('app_budget_show', {'idBudget': budget.idBudget}) }}">Afficher</a>
+                    <a class="btn btn-primary" href="{{ path('app_budget_edit', {'idBudget': budget.idBudget}) }}">Modifer</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <a class="btn btn-success" href="{{ path('app_budget_new') }}">Ajouter un budget</a>
+{% endblock %}

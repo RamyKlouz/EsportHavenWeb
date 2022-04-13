@@ -1,0 +1,79 @@
+{% extends 'header.oc.html.twig' %}
+
+{% block title %}Gestion des sponsors{% endblock %}
+
+{% block body %}
+    <h1>Gestion des Sponsors</h1>
+
+    <div class="table-responsive">
+    <table class="table align-items-center ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Societe</th>
+                <th>Nom sponsor</th>
+                <th>Montant</th>
+                <th>Duree Sponsorisation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sponsor in sponsors %}
+            <tr>
+                <td>{{ sponsor.idSponsor }}</td>
+                <td>{{ sponsor.societe }}</td>
+                <td>{{ sponsor.nomSponsor }}</td>
+                <td>{{ sponsor.montant }}</td>
+                <td>{{ sponsor.dureeSpons }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('app_sponsors_show', {'idSponsor': sponsor.idSponsor}) }}">Afficher</a>
+                    <a class="btn btn-primary" href="{{ path('app_sponsors_edit', {'idSponsor': sponsor.idSponsor}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <a class="btn btn-success" href="{{ path('app_sponsors_new') }}">Ajouter un sponsor</a>
+
+
+
+
+    </div>
+
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on the button, open the modal
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+    </script>
+
+{% endblock %}

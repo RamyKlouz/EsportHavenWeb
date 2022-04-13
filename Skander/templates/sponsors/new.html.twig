@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Sponsors{% endblock %}
+
+{% block body %}
+    <h1><a class="btn btn-primary" href="{{ path('app_sponsors_index') }}" class="btn btn-primary" type="button" style="border-radius: 50%">←</a>Ajouter un nouveau Sponsor</h1>
+
+    {{ include('sponsors/_form.html.twig') }}
+
+    <a class="btn btn-info" href="{{ path('app_sponsors_index') }}">back to list</a>
+{% endblock %}
