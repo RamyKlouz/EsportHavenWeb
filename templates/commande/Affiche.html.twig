@@ -1,0 +1,25 @@
+{% extends 'header.oc.html.twig' %}
+
+{% block title %}Afficher Les commandes{% endblock %}
+
+{% block body %}
+    <h1>Liste des Produits</h1>
+
+<table border="1">
+    <tr>
+        <th>Référence</th><th>Client</th><th>Somme totale</th><th>Suppression</th>
+    </tr>
+
+    {% for c in cc  %}
+        <tr>
+            <td>{{ c.orderid }}</td>
+            <td>{{ c.client }}</td>
+            <td>{{ c.somme }}</td>
+            <td><a href="{{ path('DO',{'id':c.orderid})  }}">Supprimer</a></td>
+
+        </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}
