@@ -1,0 +1,28 @@
+{% extends 'header.oc.html.twig' %}
+
+{% block title %}Afficher Produits{% endblock %}
+
+{% block body %}
+    <h1>Liste des Produits</h1>
+
+<table border="1">
+    <tr>
+        <th>Name</th><th>Type</th><th>Marque</th><th>Quantié</th><th>Prix</th><th>Delete</th><th>Update</th>
+    </tr>
+
+    {% for c in cc  %}
+        <tr>
+            <td>{{ c.nom }}</td>
+            <td>{{ c.type }}</td>
+            <td>{{ c.marque }}</td>
+            <td>{{ c.quantite }}</td>
+            <td>{{ c.prix}}</td>
+            <td><a href="{{ path('U',{'id':c.productid})  }}">Modifier</a></td>
+            <td><a href="{{ path('DD',{'id':c.productid})  }}">Supprimer</a></td>
+
+        </tr>
+    {% endfor %}
+
+</table>
+    <a href="{{ path('Addp') }}">Ajout d'un Produit</a>
+{% endblock %}

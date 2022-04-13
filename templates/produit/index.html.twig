@@ -1,0 +1,34 @@
+{% extends 'header.oc.html.twig' %}
+
+{% block title %}Hello ProduitController!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-3"><a href="{{ path("Aff")}}">
+                <div class="card">
+                    <img src="https://www.researchgate.net/profile/Serge-Belongie/publication/221362362/figure/fig2/AS:305566657335318@1449864176496/Sample-of-in-vitro-images-for-different-products.png"
+                         alt="Option 1" class="card-img-top" href="{{ path('Aff')}}">
+                    <div class="card-body">
+                        <p style="text-align:center" > Liste des Produits </p>
+                    </div>
+                </div></a>
+            </div>
+        </div>
+        <br><br>
+        <div class="row" >
+            <div class="col-3"><a href="{{ path("Addp")}}">
+                <div class="card" >
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/MAERSK_MC_KINNEY_M%C3%96LLER_%26_MARSEILLE_MAERSK_%2848694054418%29.jpg"
+                         alt="Option 2" class="card-img-top" >
+                    <div class="card-body">
+                        <h5 class="card-title>" Ajouter un Produit></h5>
+                        <p style="text-align:center" > Ajouter un Produit </p>
+                    </div>
+                </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
