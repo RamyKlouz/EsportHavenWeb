@@ -52,6 +52,16 @@ class ProduitController extends AbstractController
     }
 
     /**
+     * @Route ("/Clientproduit",name="Affccc")
+     */
+    function AfficheCli(){
+        $repo=$this->getDoctrine()->getRepository(Produit::class);
+        $produit=$repo->findAll();
+        return $this->render('produit/Afficheclient.html.twig',
+            ['cc'=>$produit]);
+    }
+
+    /**
      * @param $id
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/DeleteProduct/{id}", name="DD")

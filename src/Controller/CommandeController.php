@@ -22,7 +22,7 @@ class CommandeController extends AbstractController
 
 
     /**
-     * @Route ("/ShowOrder",name="orders")
+     * @Route ("/ShowOrder",name="SO")
      */
     function AfficheCommande(){
         $repo=$this->getDoctrine()->getRepository(Commande::class);

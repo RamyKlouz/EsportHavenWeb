@@ -31,7 +31,15 @@ class Produit
 
     /**
      * @var string
-     * @Assert\NotNull
+     *
+     * @Assert\Length(
+     *      min = 4,
+     *      max = 12,
+     *      minMessage = "Le type doit avoir au moins {{ limit }} charactères",
+     *      maxMessage = "Le type doit avoir au plus {{ limit }} charactères",
+     *      allowEmptyString = false
+     * )
+     *
      * @ORM\Column(name="type", type="string", length=50, nullable=false)
      */
     private $type;
