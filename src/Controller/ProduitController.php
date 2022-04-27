@@ -74,6 +74,14 @@ class ProduitController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('Aff');
     }
+    /**
+     * @param $id
+     * @Route("/SearchProduct/{id}", name="SPbyID")
+     */
+    function SearchProduit($id){
+        $repo=$this->getDoctrine()->getRepository(Produit::class);
+        return $repo->find($id);
+    }
 
     /**
      * @param $id

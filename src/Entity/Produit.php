@@ -33,7 +33,7 @@ class Produit
      * @var string
      *
      * @Assert\Length(
-     *      min = 4,
+     *      min = 3,
      *      max = 12,
      *      minMessage = "Le type doit avoir au moins {{ limit }} charactères",
      *      maxMessage = "Le type doit avoir au plus {{ limit }} charactères",

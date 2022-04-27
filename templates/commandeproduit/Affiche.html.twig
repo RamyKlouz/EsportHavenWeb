@@ -1,0 +1,26 @@
+{% extends 'header.client.html.twig' %}
+
+{% block title %}Votre Panier :{% endblock %}
+
+{% block body %}
+    <h1 style="text-align:center" >Votre Panier :</h1>
+
+    <table style="border:1px solid black;margin-left:auto;margin-right:auto;">
+        <tr>
+            <th>Name</th><th>Type</th><th>Marque</th><th>Quantité</th><th>Prix Total</th><th>Ajouter</th>
+        </tr>
+
+        {% for cp in cpp  %}
+            <tr>
+                <td>{{ cp.productID.nom }}</td>
+                <td>{{ cp.productID.type }}</td>
+                <td>{{ cp.productID.marque }}</td>
+                <td>{{ cp.quantite }}</td>
+                <td>{{ cp.sommePrix}}</td>
+                <td><a href="">Retirer du Panier</a></td>
+
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock %}
