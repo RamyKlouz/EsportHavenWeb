@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Endroid\QrCode\Builder\Builder;
 
 class ProduitController extends AbstractController
 {
@@ -34,6 +35,10 @@ class ProduitController extends AbstractController
             $em=$this->getDoctrine()->getManager();
             $em->persist($produit);
             $em->flush();
+            $this->addFlash(
+                'notice',
+                'Votre Produit a été ajouté !'
+            );
             return $this->redirectToRoute('Aff');
         }
         return $this->render('produit/addproductform.html.twig',
@@ -74,6 +79,19 @@ class ProduitController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('Aff');
     }
+
+    /**
+     * @param $id
+     * @Route("/qrProduct/{id}", name="DD")
+     */
+    function qrProduit($id){
+        $repo=$this->getDoctrine()->getRepository(Produit::class);
+        $produits=$repo->find($id);
+        $qrcode=new QrCodeResponse('hello');
+        return $this->render('produit/Affiche.html.twig',
+            ['qrCode'=>$qrcode]);
+    }
+
     /**
      * @param $id
      * @Route("/SearchProduct/{id}", name="SPbyID")
@@ -81,6 +99,7 @@ class ProduitController extends AbstractController
     function SearchProduit($id){
         $repo=$this->getDoctrine()->getRepository(Produit::class);
         return $repo->find($id);
+
     }
 
     /**

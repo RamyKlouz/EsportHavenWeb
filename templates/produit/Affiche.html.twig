@@ -1,5 +1,7 @@
 {% extends 'header.oc.html.twig' %}
 
+
+
 {% block title %}Afficher Produits{% endblock %}
 
 {% block body %}
@@ -7,7 +9,7 @@
 
 <table border="1">
     <tr>
-        <th>Name</th><th>Type</th><th>Marque</th><th>Quantié</th><th>Prix</th><th>Modification</th><th>Suppression</th>
+        <th>Name</th><th>Type</th><th>Marque</th><th>Quantié</th><th>Prix</th><th>Code QR</th><th>Modification</th><th>Suppression</th>
     </tr>
 
     {% for c in cc  %}
@@ -17,6 +19,30 @@
             <td>{{ c.marque }}</td>
             <td>{{ c.quantite }}</td>
             <td>{{ c.prix}}</td>
+            <td><!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Launch demo modal
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="{{ qr_code_path('My QR Code') }}" />
+                                <img src="{{ qr_code_url('My QR Code','default') }}" />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div></td>
             <td><a href="{{ path('U',{'id':c.productid})  }}">Modifier</a></td>
             <td><a href="{{ path('DD',{'id':c.productid})  }}">Supprimer</a></td>
 
@@ -24,5 +50,9 @@
     {% endfor %}
 
 </table>
+
+
+
+
     <a href="{{ path('Addp') }}">Ajout d'un Produit</a>
 {% endblock %}
