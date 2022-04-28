@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{{ form_start(form,{'attr': {'novalidate': 'novalidate'}} ) }}
+{% block title %}Ajouter Tournois{% endblock %}
+
+{% block body %}
+    <h1>Ajouter des nouveaux Tournois</h1>
+
+
+    {{ include('tournois/_form.html.twig') }}
+
+    <a href="{{ path('app_tournois_index') }}">back to list</a>
+{% endblock %}

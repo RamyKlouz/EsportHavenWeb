@@ -1,0 +1,36 @@
+{% extends 'header.oc.html.twig' %}
+
+{% block title %}Calendrier des tournois{% endblock %}
+
+{% block body %}
+    <h2><center>Calendrier des Tournois</center></h2>
+    <div id="calendrier">
+
+    </div>
+    <style>
+        #calendrier{
+            width: 55%;
+            margin: auto;
+        }
+    </style>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        window.onload = () => {
+            let calendarElt = document.querySelector("#calendrier")
+            let calendar = new FullCalendar.Calendar(calendarElt,{
+                initialView : 'dayGridMonth',
+                locale : 'fr',
+                events: {{ data|raw }},
+                editable: true,
+                eventResizableFromStart: true
+            })
+            calendar.on('eventChange', (e) =>{
+                console.log(e)
+            })
+            calendar.render()
+
+        }
+
+    </script>
+{% endblock %}

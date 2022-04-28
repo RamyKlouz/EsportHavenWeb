@@ -1,0 +1,32 @@
+{% extends 'header.client.html.twig' %}
+
+{% block title %}E-SPORTS HAVEN!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class ="row">
+        {% for tournoi in tournois  %}
+            
+            <div class="card bg-light mb-3" style="max-width: 18rem;">
+              <div class="card">
+                  <div class="card-title>">
+                      <h5 class="m-lg-3"> Nom du tournoi : {{ tournoi.nom}}</h5>
+                  </div>
+                  <div class="card-body">
+
+                      <span class="card-background-mask-info"> Nombre d'équipes : {{ tournoi.nbEquipes }} </span><br>
+                      <span class="card-background-mask-info"> Date de début :{{ tournoi.DateDeb |date('m/d/y')}} </span><br>
+                      <span class="card-background-mask-info"> Date de fin : {{ tournoi.DateFin |date('m/d/y')}} </span><br>
+                      <span class="card-background-mask-info"> Jeux : {{ tournoi.jeux }} </span><br>
+                  </div>
+              </div>
+        </div>
+
+
+        {% endfor%}
+
+    </div>
+
+</div>
+
+{% endblock %}

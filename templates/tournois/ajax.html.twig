@@ -1,0 +1,28 @@
+
+{% for tournoi in tournois %}
+    <tr>
+
+        <td>{{ tournoi.nom }}</td>
+        <td>{{ tournoi.nbEquipes }}</td>
+        <td>{{ tournoi.dateDeb ? tournoi.dateDeb|date('Y-m-d') : '' }}</td>
+        <td>{{ tournoi.dateFin ? tournoi.dateFin|date('Y-m-d') : '' }}</td>
+        <td>{{ tournoi.jeux }}</td>
+        <td>
+            <table style="margin-bottom: 20px">
+                {% for partie in tournoi.parties %}
+                    <tr>
+                        <td>{{ partie.idEquipe1.nom }} VS {{ partie.idEquipe2.nom }}  à {{ partie.dateDerou | date('Y-m-d') }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </td>
+        <td>
+            <a class="btn btn-success" href="{{ path('app_tournois_show', {'id': tournoi.id}) }}">show</a>
+            <a class="btn btn-warning" href="{{ path('app_tournois_edit', {'id': tournoi.id}) }}">edit</a>
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="7">no records found</td>
+    </tr>
+{% endfor %}
