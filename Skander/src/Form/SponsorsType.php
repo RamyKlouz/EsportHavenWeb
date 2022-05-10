@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Sponsors;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,8 +17,16 @@ class SponsorsType extends AbstractType
             ->add('societe')
             ->add('nomSponsor')
             ->add('montant')
-            ->add('dureeSpons')
+            ->add('typeSponsor', ChoiceType::class, [
+                'choices'  => [
+                    'CDI ' => 'CDI ',
+                    'CDD ' => 'CDD ',
+                ],
+            ])
 
+            ->add('image', FileType::class, array('data_class' => null,'required' => false),  [
+                'label' => true,
+            ])
         ;
     }
 

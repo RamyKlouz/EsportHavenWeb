@@ -3,28 +3,50 @@
 {% block title %}Gestion des sponsors{% endblock %}
 
 {% block body %}
+
+
+    <div id="divs">
+        <form class="app-search d-none d-lg-block">
+            <div class="position-relative">
+                <input id="search" type="text" class="form-control" placeholder="Nom Sponsor">
+                <button class="btn btn-primary" type="button"><i class="bx bx-search-alt align-middle"></i></button>
+            </div>
+        </form>
+        <a class="tg-btn" href="" id="idup">ID ⬆️</a>
+        <a class="tg-btn" href="" id="iddown">ID ⬇️</a>
+    </div>
+    <br>
+
+
+
+
     <h1>Gestion des Sponsors</h1>
 
     <div class="table-responsive">
-    <table class="table align-items-center ">
+    <table id="t" class="table align-items-center ">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Societe</th>
                 <th>Nom sponsor</th>
                 <th>Montant</th>
-                <th>Duree Sponsorisation</th>
+                <th>Type Contrat Sponsor</th>
+                <th>Image</th>
+
                 <th>actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="all">
         {% for sponsor in sponsors %}
             <tr>
                 <td>{{ sponsor.idSponsor }}</td>
                 <td>{{ sponsor.societe }}</td>
                 <td>{{ sponsor.nomSponsor }}</td>
                 <td>{{ sponsor.montant }}</td>
-                <td>{{ sponsor.dureeSpons }}</td>
+                <td>{{ sponsor.typeSponsor }}</td>
+                <td><img src="{{ asset('uploads/images/' ~ sponsor.image) }}" alt="" style="width: 50px;height: 50px"> </td>
+
+
                 <td>
                     <a class="btn btn-info" href="{{ path('app_sponsors_show', {'idSponsor': sponsor.idSponsor}) }}">Afficher</a>
                     <a class="btn btn-primary" href="{{ path('app_sponsors_edit', {'idSponsor': sponsor.idSponsor}) }}">Modifier</a>
@@ -36,44 +58,169 @@
             </tr>
         {% endfor %}
         </tbody>
+        <tbody id="search">
+
+        </tbody>
     </table>
     </div>
 
     <a class="btn btn-success" href="{{ path('app_sponsors_new') }}">Ajouter un sponsor</a>
-
-
-
+    <a class="btn btn-danger" href="{{ path('statsponsor') }}">Show stat</a>
+    <a class="btn btn-warning" href="{{ path('pdf_index') }}">Export PDF</a>
 
     </div>
 
 
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        // Get the modal
-        var modal = document.getElementById("myModal");
+        $( document ).ready(function() {
 
-        // Get the button that opens the modal
-        var btn = document.getElementById("myBtn");
+            /*begin rechercher avancee multicritéres selon nom et lieux*/
+            $("#divs").keyup(function(e){
+                /* La variable value va prendre la valeur insérer dans le champ de texte afin d’effectuer la recherche */
+                var value = $("#search").val();
+                if(value.length >= 1 || value.length == 0  )
+                {
 
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
+                    //    alert(value);
+                    /* Ajax est lancé lors du remplissage du champ texte dont l’id est « search » pour faire la recherche */
+                    $.ajax({
+                        /* l’url est une chaine de caractères contenant l’adresse où la requête est envoyée */
+                        url : "{{ path('search_sponsor') }}",
+                        /* La méthode utilisée pour transférer les données est GET */
+                        type : 'GET',
+                        /*Ici search value va prendre la chaine entrée par un utilisateur dans la zone de recherche et sera placée après l’url */
+                        data: {
+                            'searchValue' : value
+                        },
+                        /*Cette fonction permet de vider le contenu du tableau pour recevoir le nouveau contenu*/
+                        success : function(retour){
+                            if(retour){
+                                $('#t tbody#search').empty();
+                                $.each(JSON.parse(retour), function(i, obj) {
+                                    $('#t tbody#all').hide();
+                                    $('#t tbody#search').append('<tr><td> '+obj.idSponsor+'  </td><td>    '+obj.societe+'  </td> <td>'+obj.nomSponsor+' </td>  <td>'+obj.montant+' </td>  <td>'+obj.typeSponsor+' </td>  <td> <a href="/sponsors/'+obj.idSponsor+'/edit">🖊️</a> </td>   </tr>');
+                                });
+                            }
+                            else
+                            {
 
-        // When the user clicks on the button, open the modal
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
+                                $('#t tbody#all').show();
+                                $('#t tbody#search').empty();
+                                $('#t tbody#search').fadeIn('fast');
 
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
+                            }
+                        },
+                    });
+                    return false;
+                }
+            });
+            /*end rechercher avancee multicritéres selon sujet et staus*/
 
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
 
+            /*begin trie up selon id*/
+            $("#idup").click(function(e){
+                /* La variable value va prendre la valeur insérer dans le champ de texte afin d’effectuer la recherche */
+                var value = $("#search").val();
+                var value3 ="ASC";
+
+                //    alert(value);
+                /* Ajax est lancé lors du remplissage du champ texte dont l’id est « search » pour faire la recherche */
+                $.ajax({
+                    /* l’url est une chaine de caractères contenant l’adresse où la requête est envoyée */
+                    url : "{{ path('search_sponsor') }}",
+                    /* La méthode utilisée pour transférer les données est GET */
+                    type : 'GET',
+                    /*Ici search value va prendre la chaine entrée par un utilisateur dans la zone de recherche et sera placée après l’url */
+                    data: {
+                        'searchValue' : value,
+                        'orderid': value3
+                    },
+                    /*Cette fonction permet de vider le contenu du tableau pour recevoir le nouveau contenu*/
+                    success : function(retour){
+                        if(retour){
+                            $('#t tbody#search').empty();
+                            $.each(JSON.parse(retour), function(i, obj) {
+                                $('#t tbody#all').hide();
+                                $('#t tbody#search').append('<tr><td> '+obj.idSponsor+'  </td><td>    '+obj.societe+'  </td> <td>'+obj.nomSponsor+' </td>  <td>'+obj.montant+' </td>  <td>'+obj.typeSponsor+' </td>  <td> <a href="/sponsors/'+obj.idSponsor+'/edit">🖊️</a> </td>   </tr>');
+                            });
+                        }
+                        else
+                        {
+                            $('#t tbody#all').show();
+                            $('#t tbody#search').empty();
+                            $('#t tbody#search').fadeIn('fast');
+                        }
+                    },
+                });
+                return false;
+
+            });
+            /*end trie up selon id*/
+
+            /*begin trie down selon id*/
+            $("#iddown").click(function(e){
+                /* La variable value va prendre la valeur insérer dans le champ de texte afin d’effectuer la recherche */
+                var value = $("#search").val();
+                var value3 ="DESC";
+
+                //    alert(value);
+                /* Ajax est lancé lors du remplissage du champ texte dont l’id est « search » pour faire la recherche */
+                $.ajax({
+                    /* l’url est une chaine de caractères contenant l’adresse où la requête est envoyée */
+                    url : "{{ path('search_sponsor') }}",
+                    /* La méthode utilisée pour transférer les données est GET */
+                    type : 'GET',
+                    /*Ici search value va prendre la chaine entrée par un utilisateur dans la zone de recherche et sera placée après l’url */
+                    data: {
+                        'searchValue' : value,
+                        'orderid': value3
+                    },
+                    /*Cette fonction permet de vider le contenu du tableau pour recevoir le nouveau contenu*/
+                    success : function(retour){
+                        if(retour){
+                            $('#t tbody#search').empty();
+                            $.each(JSON.parse(retour), function(i, obj) {
+                                $('#t tbody#all').hide();
+                                $('#t tbody#search').append('<tr><td> '+obj.idSponsor+'  </td><td>    '+obj.societe+'  </td> <td>'+obj.nomSponsor+' </td>  <td>'+obj.montant+' </td>  <td>'+obj.typeSponsor+' </td>  <td> <a href="/sponsors/'+obj.idSponsor+'/edit">🖊️</a> </td>   </tr>');
+                            });
+                        }
+                        else
+                        {
+                            $('#t tbody#all').show();
+                            $('#t tbody#search').empty();
+                            $('#t tbody#search').fadeIn('fast');
+                        }
+                    },
+                });
+                return false;
+
+            });
+            /*end trie down selon id*/
+        });
     </script>
 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

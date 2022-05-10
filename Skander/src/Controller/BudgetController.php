@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Budget;
+use App\Entity\Quizs;
 use App\Form\BudgetType;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,4 +97,83 @@ class BudgetController extends AbstractController
 
         return $this->redirectToRoute('app_budget_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function getData() :array
+    {
+        /**
+         * @var $Restaurant Resta[]
+         */
+        $list = [];
+
+        $bud = $this->getDoctrine()->getRepository(Budget::class)->findAll();
+
+        foreach ($bud as $Resta) {
+            $list[] = [
+                $Resta->getIdBudget(),
+                $Resta->getMontant(),
+                $Resta->getActivite(),
+
+
+            ];
+        }
+        return $list;
+    }
+
+
+    /**
+     * @Route("/excel/export",  name="export")
+     */
+    public function export()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Budget List');
+
+        $sheet->getCell('A1')->setValue('idBudget');
+        $sheet->getCell('B1')->setValue('montant');
+        $sheet->getCell('C1')->setValue('activite');
+
+
+
+        // Increase row cursor after header write
+        $sheet->fromArray($this->getData(),null, 'A2', true);
+        $writer = new Xlsx($spreadsheet);
+        // $writer->save('ss.xlsx');
+        $writer->save('Budgets'.date('m-d-Y_his').'.xlsx');
+        return $this->redirectToRoute('app_budget_index');
+
+    }
+
+
+
+
+
+
+
+
 }

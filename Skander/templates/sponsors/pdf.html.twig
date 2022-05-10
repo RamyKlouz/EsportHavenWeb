@@ -1,0 +1,70 @@
+{% block body %}
+
+<div class="content">
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+<div class="card">
+<div class="card-header card-header-primary">
+    <h1 align="center" style="color:blue;">Sponsors</h1>
+    <h2  align="center"style="color:orange;" > List of Sponsors </h2>
+</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #reclamations {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #reclamations td, #reclamations th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #reclamations tr:nth-child(even){background-color: #f2f2f2;}
+        #reclamations tr:hover {background-color: #ddd;}
+        #reclamations th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: royalblue;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<table id="reclamations">
+
+    <tr>
+
+       <th>ID</th>
+                <th>Societe</th>
+                <th>Nom sponsor</th>
+                <th>Montant</th>
+                <th>Type Contrat Sponsor</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for s in sponsors %}
+    <tr>
+
+                 <td>{{ s.idSponsor }}</td>
+                <td>{{ s.societe }}</td>
+                <td>{{ s.nomSponsor }}</td>
+                <td>{{ s.montant }}</td>
+                <td>{{ s.typeSponsor }}</td>
+
+                        {# {% if reclamation.imgrec != null %}
+                            <td><img src="{{ asset('uploads/images/' ~ reclamation.imgrec) }}" alt="" style="width: 50px;height: 50px"> </td>
+                        {% endif %}
+                        {% if reclamation.imgrec == null %}
+                           <td>No.Image</td>
+                        {% endif %} #}
+                        <script>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

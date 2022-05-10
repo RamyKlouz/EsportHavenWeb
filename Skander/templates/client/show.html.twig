@@ -1,0 +1,38 @@
+{% extends 'header.client.html.twig' %}
+
+{% block title %}Sponsors{% endblock %}
+
+{% block body %}
+    <h1><a class="btn btn-primary" href="{{ path('app_sponsors_index') }}" class="btn btn-primary" type="button" style="border-radius: 50%">←</a>Details de Sponsor</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>ID</th>
+                <td>{{ sponsor.idSponsor }}</td>
+            </tr>
+            <tr>
+                <th>Societe</th>
+                <td>{{ sponsor.societe }}</td>
+            </tr>
+            <tr>
+                <th>Sponsor</th>
+                <td>{{ sponsor.nomSponsor }}</td>
+            </tr>
+            <tr>
+                <th>Montant</th>
+                <td>{{ sponsor.montant }}</td>
+            </tr>
+            <tr>
+                <th>Duree Sponsorisation</th>
+                <td>{{ sponsor.dureeSpons }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-info" href="{{ path('app_sponsors_index') }}">back to list</a>
+
+    <a class="btn btn-primary" href="{{ path('app_sponsors_edit', {'idSponsor': sponsor.idSponsor}) }}">Modifier</a>
+
+    {{ include('sponsors/_delete_form.html.twig') }}
+{% endblock %}
