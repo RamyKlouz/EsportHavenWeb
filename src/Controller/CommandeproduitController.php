@@ -35,6 +35,18 @@ class CommandeproduitController extends AbstractController
     }
 
     /**
+     * @Route ("/Catalog",name="cata")
+     */
+    function ShowProducts(){
+        $repo=$this->getDoctrine()->getRepository(Produit::class);
+        $produit=$repo->findAll();
+        return $this->render('commandeproduit/Affiche2.html.twig',
+            ['pp'=>$produit]);
+    }
+
+
+
+    /**
      * @param $id
      * @Route("/SearchProductforPanier/{id}", name="SPbyID2")
      */
@@ -56,7 +68,7 @@ class CommandeproduitController extends AbstractController
         $em=$this->getDoctrine()->getManager();
         if ($this->Searchintable($pid) !== null) {
             $produitc=Searchintable($pid);
-            $newq=$produitc->getQuantite+1;
+            $newq=$produitc->
             $produitc->setQuantite($newq);
 
             $em->flush();

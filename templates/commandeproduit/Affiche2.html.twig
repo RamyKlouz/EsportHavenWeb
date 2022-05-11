@@ -1,0 +1,26 @@
+{% extends 'header.client.html.twig' %}
+
+{% block title %}Nos Produits{% endblock %}
+
+{% block body %}
+    <h1 style="text-align:center" >Nos Produits</h1>
+
+    <table style="border:1px solid black;margin-left:auto;margin-right:auto;">
+        <tr>
+            <th>Name</th><th>Type</th><th>Marque</th><th>Quantié</th><th>Prix</th><th>Ajouter</th>
+        </tr>
+
+        {% for c in pp  %}
+            <tr>
+                <td>{{ c.nom }}</td>
+                <td>{{ c.type }}</td>
+                <td>{{ c.marque }}</td>
+                <td>{{ c.quantite }}</td>
+                <td>{{ c.prix}}</td>
+                <td><a href={{ route("/AddtoPanier/{pid}&{oid}")}}>Ajouter au Panier</a></td>
+
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock %}

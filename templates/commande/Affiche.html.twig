@@ -3,9 +3,9 @@
 {% block title %}Afficher Les commandes{% endblock %}
 
 {% block body %}
-    <h1>Liste des Produits</h1>
+    <h1>Liste des Commandes</h1>
 
-<table border="1">
+<table class="table align-items-center ">
     <tr>
         <th>Référence</th><th>Client</th><th>Somme totale</th><th>Suppression</th>
     </tr>
@@ -15,11 +15,11 @@
             <td>{{ c.orderid }}</td>
             <td>{{ c.client }}</td>
             <td>{{ c.somme }}</td>
-            <td><a href="{{ path('DO',{'id':c.orderid})  }}">Supprimer</a></td>
+            <td><button type="button" class="btn btn-danger"><a href="{{ path('DO',{'id':c.orderid})  }}">Supprimer</a></button></td>
 
         </tr>
     {% endfor %}
 
 </table>
-    <a href="{{ path('app_produit') }}">Retour</a>
+    <button type="button" class="btn btn-info"><a href="{{ path('app_produit') }}">Retour</a></button>
 {% endblock %}

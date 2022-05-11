@@ -2,57 +2,196 @@
 
 
 
-{% block title %}Afficher Produits{% endblock %}
 
+{% block title %}Afficher Produits{% endblock %}
 {% block body %}
     <h1>Liste des Produits</h1>
 
-<table border="1">
-    <tr>
-        <th>Name</th><th>Type</th><th>Marque</th><th>Quantié</th><th>Prix</th><th>Code QR</th><th>Modification</th><th>Suppression</th>
-    </tr>
 
+    <div id="divs">
+        <form class="app-search d-none d-lg-block">
+            <div class="position-relative">
+                <input id="search" type="text" class="form-control" placeholder="Produit">
+            </div>
+        </form>
+        <div style="margin: 5px;">
+        <div class="d-grid gap-2 d-md-block">
+            <button type="button" class="btn btn-outline-warning"><a class="tg-btn" href="" id="idup">Les plus chers</a></button>
+        <button type="button" class="btn btn-outline-success"><a class="tg-btn" href="" id="iddown">Les moins chers</a></button>
+        </div></div>
+    </div>
+    <br><button type="button" class="btn btn-info"><a href="{{ path('Addp') }}">Ajout d'un Produit</a></button><br>
+
+<table id="t" class="table align-items-center ">
+    <thead>
+    <tr>
+        <th>Name</th><th>Type</th><th>Marque</th><th>Quantité</th><th>Prix</th><th>PDF</th><th>Modification</th><th>Suppression</th>
+    </tr>
+    </thead>
+    <tbody id="all">
     {% for c in cc  %}
-        <tr>
+        <tr {% if loop.index is odd %}class="color"{% endif %}>
             <td>{{ c.nom }}</td>
             <td>{{ c.type }}</td>
             <td>{{ c.marque }}</td>
             <td>{{ c.quantite }}</td>
             <td>{{ c.prix}}</td>
-            <td><!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Launch demo modal
-                </button>
 
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="{{ qr_code_path('My QR Code') }}" />
-                                <img src="{{ qr_code_url('My QR Code','default') }}" />
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div></td>
-            <td><a href="{{ path('U',{'id':c.productid})  }}">Modifier</a></td>
-            <td><a href="{{ path('DD',{'id':c.productid})  }}">Supprimer</a></td>
+            <td><button type="button" class="btn btn-success"><a href="{{ path('pdf', {'id': c.productid})  }}">PDF</a></button></td>
+
+            <td><button type="button" class="btn btn-outline-info"><a href="{{ path('U',{'id':c.productid})  }}">Modifier</a></button></td>
+            <td><button type="button" class="btn btn-danger"><a href="{{ path('DD',{'id':c.productid})  }}">Supprimer</a></button></td>
 
         </tr>
     {% endfor %}
+    </tbody>
+    <tbody id="search">
+
+    </tbody>
 
 </table>
+    {# display navigation #}
+<nav aria-label="Page navigation example">
+    <div class="pagination">
+        {{ knp_pagination_render(cc) }}
+    </div>
+
+</nav>
 
 
 
 
-    <a href="{{ path('Addp') }}">Ajout d'un Produit</a>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+
+            /*begin rechercher avancee multicritéres selon nom et lieux*/
+            $("#divs").keyup(function(e){
+                /* La variable value va prendre la valeur insérer dans le champ de texte afin d’effectuer la recherche */
+                var value = $("#search").val();
+                if(value.length >= 1 || value.length == 0  )
+                {
+
+                    //    alert(value);
+                    /* Ajax est lancé lors du remplissage du champ texte dont l’id est « search » pour faire la recherche */
+                    $.ajax({
+                        /* l’url est une chaine de caractères contenant l’adresse où la requête est envoyée */
+                        url : "{{ path('ChercheProd') }}",
+                        /* La méthode utilisée pour transférer les données est GET */
+                        type : 'GET',
+                        /*Ici search value va prendre la chaine entrée par un utilisateur dans la zone de recherche et sera placée après l’url */
+                        data: {
+                            'searchValue' : value
+                        },
+                        /*Cette fonction permet de vider le contenu du tableau pour recevoir le nouveau contenu*/
+                        success : function(retour){
+                            if(retour){
+                                $('#t tbody#search').empty();
+                                $.each(JSON.parse(retour), function(i, obj) {
+                                    $('#t tbody#all').hide();
+                                    $('#t tbody#search').append('<tr><td> '+obj.nom+'  </td><td>    '+obj.type+'  </td> <td>'+obj.marque+' </td>  <td>'+obj.quantite+' </td>  <td>'+obj.prix+' </td> <td></td> <td> <a href="/UpdateProduct/'+obj.productid+'">Modifier</a> </td> <td> <a href="/DeleteProduct/'+obj.productid+'">Supprimer</a> </td>  </tr>');
+                                });
+                            }
+                            else
+                            {
+
+                                $('#t tbody#all').show();
+                                $('#t tbody#search').empty();
+                                $('#t tbody#search').fadeIn('fast');
+
+                            }
+                        },
+                    });
+                    return false;
+                }
+            });
+            /*end rechercher avancee multicritéres selon sujet et staus*/
+
+
+            /*begin trie up selon id*/
+            $("#idup").click(function(e){
+                /* La variable value va prendre la valeur insérer dans le champ de texte afin d’effectuer la recherche */
+                var value = $("#search").val();
+                var value3 ="ASC";
+
+                //    alert(value);
+                /* Ajax est lancé lors du remplissage du champ texte dont l’id est « search » pour faire la recherche */
+                $.ajax({
+                    /* l’url est une chaine de caractères contenant l’adresse où la requête est envoyée */
+                    url : "{{ path('ChercheProd') }}",
+                    /* La méthode utilisée pour transférer les données est GET */
+                    type : 'GET',
+                    /*Ici search value va prendre la chaine entrée par un utilisateur dans la zone de recherche et sera placée après l’url */
+                    data: {
+                        'searchValue' : value,
+                        'orderid': value3
+                    },
+                    /*Cette fonction permet de vider le contenu du tableau pour recevoir le nouveau contenu*/
+                    success : function(retour){
+                        if(retour){
+                            $('#t tbody#search').empty();
+                            $.each(JSON.parse(retour), function(i, obj) {
+                                $('#t tbody#all').hide();
+                                $('#t tbody#search').append('<tr><td> '+obj.nom+'  </td><td>    '+obj.type+'  </td> <td>'+obj.marque+' </td>  <td>'+obj.quantite+' </td>  <td>'+obj.prix+' </td> <td></td> <td> <a href="/UpdateProduct/'+obj.productid+'">Modifier</a> </td> <td> <a href="/DeleteProduct/'+obj.productid+'">Supprimer</a> </td>  </tr>');
+                            });
+                        }
+                        else
+                        {
+                            $('#t tbody#all').show();
+                            $('#t tbody#search').empty();
+                            $('#t tbody#search').fadeIn('fast');
+                        }
+                    },
+                });
+                return false;
+
+            });
+            /*end trie up selon id*/
+
+            /*begin trie down selon id*/
+            $("#iddown").click(function(e){
+                /* La variable value va prendre la valeur insérer dans le champ de texte afin d’effectuer la recherche */
+                var value = $("#search").val();
+                var value3 ="DESC";
+
+                //    alert(value);
+                /* Ajax est lancé lors du remplissage du champ texte dont l’id est « search » pour faire la recherche */
+                $.ajax({
+                    /* l’url est une chaine de caractères contenant l’adresse où la requête est envoyée */
+                    url : "{{ path('ChercheProd') }}",
+                    /* La méthode utilisée pour transférer les données est GET */
+                    type : 'GET',
+                    /*Ici search value va prendre la chaine entrée par un utilisateur dans la zone de recherche et sera placée après l’url */
+                    data: {
+                        'searchValue' : value,
+                        'orderid': value3
+                    },
+                    /*Cette fonction permet de vider le contenu du tableau pour recevoir le nouveau contenu*/
+                    success : function(retour){
+                        if(retour){
+                            $('#t tbody#search').empty();
+                            $.each(JSON.parse(retour), function(i, obj) {
+                                $('#t tbody#all').hide();
+                                $('#t tbody#search').append('<tr><td> '+obj.nom+'  </td><td>    '+obj.type+'  </td> <td>'+obj.marque+' </td>  <td>'+obj.quantite+' </td>  <td>'+obj.prix+' </td> <td></td> <td> <a href="/UpdateProduct/'+obj.productid+'">Modifier</a> </td> <td> <a href="/DeleteProduct/'+obj.productid+'">Supprimer</a> </td>  </tr>');
+                            });
+                        }
+                        else
+                        {
+                            $('#t tbody#all').show();
+                            $('#t tbody#search').empty();
+                            $('#t tbody#search').fadeIn('fast');
+                        }
+                    },
+                });
+                return false;
+
+            });
+            /*end trie down selon id*/
+        });
+    </script>
+
+
+
+
 {% endblock %}

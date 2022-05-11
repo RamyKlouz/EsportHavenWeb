@@ -48,7 +48,7 @@ class Produit
      * @var string
      * @Assert\NotNull
      *
-     * @Assert\Choice({"Fnatic", "C9", "G2"})
+     * @Assert\Choice({"Fnatic", "C9", "G2 Esports"})
      *
      * @ORM\Column(name="marque", type="string", length=50, nullable=false)
      */

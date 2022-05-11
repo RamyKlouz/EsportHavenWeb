@@ -4,11 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Produit;
 use App\Form\ProduitType;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use App\Repository\ProduitRepo;
 use Symfony\Component\Routing\Annotation\Route;
 use Endroid\QrCode\Builder\Builder;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Twilio\Rest\Client;
+
 
 class ProduitController extends AbstractController
 {
@@ -49,9 +56,13 @@ class ProduitController extends AbstractController
     /**
      * @Route ("/ShowProduct",name="Aff")
      */
-    function Affiche(){
+    function Affiche( PaginatorInterface $paginator, Request $request){
         $repo=$this->getDoctrine()->getRepository(Produit::class);
-        $produit=$repo->findAll();
+        $produit2=$repo->findAll();
+        $produit=$paginator->paginate($produit2,$request->query->getInt('page', 1), 10);
+
+
+
         return $this->render('produit/Affiche.html.twig',
             ['cc'=>$produit]);
     }
@@ -109,6 +120,10 @@ class ProduitController extends AbstractController
      * @Route("/UpdateProduct/{id}",name="U")
      */
     function Update($id,Request $request){
+
+        $account_sid = 'AC18d4d7208681b4253eef04576916fa71';
+        $auth_token = 'bd79bb6faaaeab06d6356c14890f5ccf';
+        $twilio_number = "+19894399705";
         $repository=$this->getDoctrine()->getRepository(Produit::class);
         $produit=$repository->find($id);
         $form=$this->createForm(ProduitType::class,$produit);
@@ -118,11 +133,79 @@ class ProduitController extends AbstractController
             $em=$this->getDoctrine()->getManager();
             //$em->persist($produit);
             $em->flush();
+            $client = new Client($account_sid, $auth_token);
+            $client->messages->create(
+            // Where to send a text message (your cell phone?)
+                '+21625096773',
+                array(
+                    'from' => $twilio_number,
+                    'body' => 'Votre produit a bien été modifié!'
+                ));
             return $this->redirectToRoute('Aff');
         }
         return $this->render("produit/addproductform.html.twig",
             ['f'=>$form->createView()]);
 
     }
+
+
+
+    /**
+     * @Route("/ChercherProduit", name="ChercheProd", methods={"GET"})
+     */
+    public function chercherproduit(Request $request,NormalizerInterface $Normalizer,ProduitRepo $prodRepo): Response
+    {
+
+        $request1=$request->get('searchValue');
+        $request2=$request->get('orderid');
+        $prod = $prodRepo->findName($request1,$request2);
+        $jsoncontentc =$Normalizer->normalize($prod,'json',['groups'=>'posts:read']);
+        $jsonc=json_encode($jsoncontentc);
+        if(  $jsonc == "[]" ) { return new Response(null); }
+        else{ return new Response($jsonc); }
+
+    }
+
+
+
+    /**
+     *@param $id
+     *@Route("/Produit/{id}/details.pdf",name="pdf", methods={"GET"})
+     */
+    public function pdf($id)
+    {
+        // Configure Dompdf according to your needs
+        $repo=$this->getDoctrine()->getRepository(Produit::class);
+        $produits=$repo->find($id);
+        $pdfOptions = new Options();
+        $pdfOptions->set('isRemoteEnabled', true);
+        $pdfOptions->set('isPhpEnabled', true);
+        $pdfOptions->set('defaultFont', 'Times New Roman');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('produit/pdf.html.twig', [
+            'produit' =>$produits,
+        ]);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+        // Output the generated PDF to Browser (inline view)
+        $dompdf->stream("produitpdf.pdf", [
+            "Attachment" => false
+        ]);
+
+
+
+    }
+
+
 
 }
